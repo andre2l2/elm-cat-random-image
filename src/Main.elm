@@ -12,31 +12,42 @@ import Html.Attributes exposing (width)
 import Html exposing (button)
 import Html exposing (text)
 
-main : Program () Int Msg
+
+main : Program () CatModel Msg
 main =
-  Browser.sandbox { init = 0, update = update, view = view }
+  Browser.sandbox { init = init, update = update, view = view }
 
-type Msg = Increment | Decrement
+type alias CatModel =
+  { id : String
+  , url : String
+  , width : String
+  , height : String
+  }
 
-update : Msg -> number -> number
-update msg model =
+init : CatModel
+init = 
+  CatModel "" "https://cdn2.thecatapi.com/images/das.jpg" "" ""
+
+type Msg = 
+  MakeRequest
+
+update : Msg -> CatModel -> CatModel
+update msg catModel =
   case msg of
-    Increment ->
-      model + 1
+    MakeRequest ->
+      catModel
 
-    Decrement ->
-      model - 1
-
-view : Int -> Html.Html Msg
+view : CatModel -> Html.Html Msg
 view model =
   section [ class "h-[100vh] bg-gray-600" ] [
     div [ class "flex items-center justify-center flex-col h-[100%] w-[100%]" ] [
       img [ 
         width 400
-      , src "https://cdn2.thecatapi.com/images/das.jpg"
+      , src model.url
       , alt "Cat ramdom image" ] []
     , button [ 
         class "cursor-pointer rounded-md bg-yellow-300 p-2 mt-5" 
+      , onClick MakeRequest
       ] [ text "Randin Image" ]
     ] 
   ]
